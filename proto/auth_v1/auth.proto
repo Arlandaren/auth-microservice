@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package auth_v1;
+
+option go_package = "service/pkg/grpc/auth_v1";
+
+message LoginRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+message RegisterRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  string token = 1;
+}
+
+message User {
+  int64 id = 1;
+  string password = 2;
+  string name = 3;
+}
+
+service AuthService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+}
