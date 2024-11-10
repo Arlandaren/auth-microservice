@@ -66,17 +66,11 @@
 1. **Клонирование репозитория**
 
    ```bash
-   git clone https://github.com/yourusername/authservice.git
-   cd authservice
+   git clone https://github.com/yourusername/auth-microservice.git
+   cd auth-microservice
    ```
 
-2. **Установка зависимостей**
-
-   ```bash
-   go mod download
-   ```
-
-3. **Настройка конфигурации**
+2. **Настройка конфигурации**
 
    Создайте файл `.env` или используйте переменные окружения для настройки:
 
@@ -84,26 +78,17 @@
    - **JWT_SECRET**: Секретный ключ для подписания JWT-токенов.
    - **GRPC_ADDRESS**: Адрес и порт для запуска gRPC сервера (например, `:50051`).
 
-4. **Миграции базы данных**
+4. **Компиляция прото-файлов**
 
-   Примените миграции для создания необходимых таблиц в базе данных:
-
-   ```bash
-   go run cmd/main.go migrate
-   ```
-
-5. **Компиляция прото-файлов**
-
-   Убедитесь, что у вас установлены `protoc` и необходимые плагины. Скомпилируйте прото-файлы:
 
    ```bash
-   protoc -I pb/ pb/auth.proto --go_out=pb --go-grpc_out=pb
+   task generate
    ```
 
 6. **Запуск приложения**
 
    ```bash
-   go run cmd/main.go
+   docker-compose up -d
    ```
 
 ## Использование
