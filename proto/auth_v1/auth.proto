@@ -24,6 +24,16 @@ message RegisterResponse {
   string token = 1;
 }
 
+message RegisterAdminRequest {
+  string name = 1;
+  string password = 2;
+  string role = 3;
+}
+
+message RegisterAdminResponse {
+  int64 id = 1;
+}
+
 message User {
   int64 id = 1;
   string password = 2;
@@ -40,6 +50,12 @@ service AuthService {
   rpc Register(RegisterRequest) returns (RegisterResponse){
     option (google.api.http) = {
       post: "/v1/auth/register"
+      body: "*"
+    };
+  };
+  rpc RegisterAdmin(RegisterAdminRequest) returns (RegisterAdminResponse){
+    option (google.api.http) = {
+    post: "/v1/auth/register/admin"
       body: "*"
     };
   };
