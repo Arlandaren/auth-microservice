@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"service/internal/shared/config"
 	"service/internal/shared/storage/dto"
 	"time"
