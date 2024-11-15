@@ -25,3 +25,20 @@ func GetJwt() string {
 	}
 	return jwt
 }
+
+func GetAddress() *dto.Address {
+	httpAddress := os.Getenv("HTTP_ADDRESS")
+	grpcAddress := os.Getenv("GRPC_ADDRESS")
+
+	if httpAddress == "" {
+		httpAddress = ":8086"
+	}
+	if grpcAddress == "" {
+		grpcAddress = ":50051"
+	}
+
+	return &dto.Address{
+		Http: httpAddress,
+		Grpc: grpcAddress,
+	}
+}

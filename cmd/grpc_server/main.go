@@ -6,31 +6,38 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"service/internal/repository"
 	"service/internal/service"
+	"service/internal/shared/config"
+	"service/internal/shared/storage/dto"
 	"service/internal/shared/storage/postgres"
 	pb "service/pkg/grpc/auth_v1"
 	"sync"
 	"syscall"
+	"time"
 
 	transport "service/internal/transport/grpc"
 )
 
-const grpcAddress = ":8080"
-
 func main() {
+	addresses := config.GetAddress()
+
 	db, err := postgres.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	log.Printf("DB connected")
+
 	repo := repository.NewRepository(db)
 
 	serv := service.NewService(repo)
@@ -43,9 +50,19 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := RunGrpcServer(ctx, server)
+		err := RunGrpcServer(ctx, server, addresses)
 		if err != nil {
 			log.Printf("failed to run grpc server: %v", err)
+			return
+		}
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := startHttpServer(ctx, addresses)
+		if err != nil {
+			log.Printf("failed to run http server: %v", err)
 			return
 		}
 	}()
@@ -59,7 +76,7 @@ func main() {
 	log.Println("Servers gracefully stopped.")
 }
 
-func RunGrpcServer(ctx context.Context, server *transport.Server) error {
+func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Address) error {
 
 	// Uncomment and configure the TLS credentials if needed
 	// credentials, err := utils.LoadTLSCredentials()
@@ -75,9 +92,9 @@ func RunGrpcServer(ctx context.Context, server *transport.Server) error {
 	reflection.Register(grpcServer)
 	pb.RegisterAuthServiceServer(grpcServer, server)
 
-	lis, err := net.Listen("tcp", grpcAddress)
+	lis, err := net.Listen("tcp", addr.Grpc)
 	if err != nil {
-		return fmt.Errorf("failed to listen on %s: %w", grpcAddress, err)
+		return fmt.Errorf("failed to listen on %s: %w", addr.Grpc, err)
 	}
 
 	go func() {
@@ -86,11 +103,52 @@ func RunGrpcServer(ctx context.Context, server *transport.Server) error {
 		}
 	}()
 
-	log.Printf("gRPC server listening at %v\n", grpcAddress)
+	log.Printf("gRPC server listening at %v\n", addr.Grpc)
 
 	<-ctx.Done()
 
 	log.Println("Shutting down gRPC server...")
 	grpcServer.GracefulStop()
+	return nil
+}
+
+func startHttpServer(ctx context.Context, addr *dto.Address) error {
+	mux := runtime.NewServeMux()
+
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
+	err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts)
+	if err != nil {
+		return fmt.Errorf("failed to register service handler: %w", err)
+	}
+
+	handler := allowCORS(mux)
+
+	srv := &http.Server{
+		Addr:    addr.Http,
+		Handler: handler,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Printf("HTTP server exited with error: %v", err)
+		}
+	}()
+
+	log.Printf("HTTP server listening at %v\n", addr.Http)
+
+	<-ctx.Done()
+
+	log.Println("Shutting down HTTP server...")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("HTTP server Shutdown failed: %w", err)
+	}
+
 	return nil
 }
