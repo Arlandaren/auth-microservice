@@ -1,6 +1,17 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx.shield.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8081:81"
+      - "8080:80"
+    depends_on:
+      - auth_service
+
   postgres:
     image: postgres:latest
     restart: always
@@ -14,20 +25,22 @@ services:
     ports:
       - "5434:5432"
 
-  server:
+  auth_service:
     build: .
     environment:
       - PG_STRING=${PG_STRING}
+      - GRPC_ADDRESS=${GRPC_ADDRESS}
+      - HTTP_ADDRESS=${HTTP_ADDRESS}
     volumes:
       - .:/app
     depends_on:
       - postgres
     restart: always
     ports:
-      - "8082:8080"
+       - "8090:8086"
+       - "8091:50051"
 
 volumes:
   pg_data:
-
 
 
