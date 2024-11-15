@@ -4,6 +4,8 @@ package auth_v1;
 
 option go_package = "service/pkg/grpc/auth_v1";
 
+import "google/api/annotations.proto";
+
 message LoginRequest {
   string name = 1;
   string password = 2;
@@ -29,6 +31,16 @@ message User {
 }
 
 service AuthService {
-  rpc Login(LoginRequest) returns (LoginResponse);
-  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse){
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+  };
+  rpc Register(RegisterRequest) returns (RegisterResponse){
+    option (google.api.http) = {
+      post: "/v1/auth/register"
+      body: "*"
+    };
+  };
 }
