@@ -22,7 +22,6 @@ import (
 	"service/internal/shared/storage/postgres"
 	"service/internal/shared/utils"
 	pb "service/pkg/grpc/auth_v1"
-	"service/pkg/tls"
 	"sync"
 	"syscall"
 	"time"
@@ -31,8 +30,8 @@ import (
 )
 
 func main() {
-	key, cert := tls.CreateAcCertificate()
-	tls.CreateServerCertificate(key, cert)
+	//key, cert := tls.CreateAcCertificate()
+	//tls.CreateServerCertificate(key, cert)
 
 	addresses := config.GetAddress()
 
@@ -89,7 +88,7 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 
 	grpcServer := grpc.NewServer(
 		grpc.Creds(credentials), // Uncomment if using TLS
-		grpc.Creds(insecure.NewCredentials()),
+		//grpc.Creds(insecure.NewCredentials()),
 		grpc.UnaryInterceptor(service.AuthInterceptor),
 	)
 	reflection.Register(grpcServer)
