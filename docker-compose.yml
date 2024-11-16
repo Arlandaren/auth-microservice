@@ -16,7 +16,7 @@ services:
     networks:
       - monitoring
     labels:
-      loki: 'true'  # Добавлено для Promtail
+      loki: 'true'
 
   postgres:
     image: postgres:latest
@@ -33,7 +33,7 @@ services:
     networks:
       - monitoring
     labels:
-      loki: 'true'  # Добавлено для Promtail
+      loki: 'true'
 
   auth_service:
     build: .
@@ -50,10 +50,11 @@ services:
     ports:
       - "8090:8086"
       - "8091:50051"
+      - "9000:9000"
     networks:
       - monitoring
     labels:
-      loki: 'true'  # Добавлено для Promtail
+      loki: 'true'
 
   prometheus:
     image: prom/prometheus:latest
@@ -72,7 +73,7 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
-      - loki  # Добавлено, чтобы Grafana ждала готовности Loki
+      - loki
     networks:
       - monitoring
 

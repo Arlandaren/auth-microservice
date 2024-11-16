@@ -9,4 +9,4 @@ scrape_configs:
   - job_name: 'auth_service_http'
     scrape_interval: 15s
     static_configs:
-      - targets: [ 'auth_service:8086' ]
+      - targets: [ 'auth_service:9000' ]

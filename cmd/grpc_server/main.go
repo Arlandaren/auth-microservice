@@ -119,7 +119,64 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 	return nil
 }
 
+//	func startHttpServer(ctx context.Context, addr *dto.Address) error {
+//		mux := runtime.NewServeMux()
+//
+//		creds, err := utils.LoadClientTLSCredentials()
+//		if err != nil {
+//			return fmt.Errorf("failed to load client TLS credentials: %w", err)
+//		}
+//
+//		opts := []grpc.DialOption{
+//			grpc.WithTransportCredentials(creds),
+//		}
+//
+//		if err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts); err != nil {
+//			return fmt.Errorf("failed to register service handler: %w", err)
+//		}
+//
+//		handler := allowCORS(mux)
+//
+//		router := http.NewServeMux()
+//
+//		router.Handle("/metrics", promhttp.Handler())
+//
+//		router.Handle("/", prometheusModule.MetricsMiddleware(handler))
+//
+//		tlsConfig, err := utils.LoadServerTLS()
+//		if err != nil {
+//			return err
+//		}
+//
+//		srv := &http.Server{
+//			Addr:      addr.Http,
+//			Handler:   router,
+//			TLSConfig: tlsConfig,
+//		}
+//
+//		go func() {
+//			if err := srv.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
+//				log.Printf("HTTP server exited with error: %v", err)
+//			}
+//		}()
+//
+//		log.Printf("HTTP server listening at %v\n", addr.Http)
+//
+//		<-ctx.Done()
+//
+//		log.Println("Shutting down HTTP server...")
+//
+//		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//		defer cancel()
+//
+//		if err := srv.Shutdown(shutdownCtx); err != nil {
+//			return fmt.Errorf("HTTP server Shutdown failed: %w", err)
+//		}
+//
+//		return nil
+//	}
 func startHttpServer(ctx context.Context, addr *dto.Address) error {
+
 	mux := runtime.NewServeMux()
 
 	creds, err := utils.LoadClientTLSCredentials()
@@ -137,40 +194,61 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 
 	handler := allowCORS(mux)
 
-	router := http.NewServeMux()
+	wrappedHandler := prometheusModule.MetricsMiddleware(handler)
 
-	router.Handle("/metrics", promhttp.Handler())
-
-	router.Handle("/", prometheusModule.MetricsMiddleware(handler))
+	httpsRouter := http.NewServeMux()
+	httpsRouter.Handle("/", wrappedHandler)
 
 	tlsConfig, err := utils.LoadServerTLS()
 	if err != nil {
 		return err
 	}
 
-	srv := &http.Server{
+	httpsServer := &http.Server{
 		Addr:      addr.Http,
-		Handler:   router,
+		Handler:   httpsRouter,
 		TLSConfig: tlsConfig,
 	}
 
+	// Запуск HTTPS в отдельной горутине
 	go func() {
-		if err := srv.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Printf("HTTP server exited with error: %v", err)
+		if err := httpsServer.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Errorf("HTTPS server exited with error: %v", err)
 		}
 	}()
+	log.Infof("HTTPS server listening at %v\n", addr.Http)
 
-	log.Printf("HTTP server listening at %v\n", addr.Http)
+	metricsRouter := http.NewServeMux()
+	metricsRouter.Handle("/metrics", promhttp.Handler())
+
+	metricsServerAddr := ":9000"
+
+	metricsServer := &http.Server{
+		Addr:    metricsServerAddr,
+		Handler: metricsRouter,
+	}
+
+	// Запуск HTTP для метрик
+	go func() {
+		if err := metricsServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Errorf("HTTP server for metrics exited with error: %v", err)
+		}
+	}()
+	log.Infof("HTTP server for metrics listening at %v\n", metricsServerAddr)
 
 	<-ctx.Done()
 
-	log.Println("Shutting down HTTP server...")
+	log.Info("Shutting down servers...")
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := srv.Shutdown(shutdownCtx); err != nil {
-		return fmt.Errorf("HTTP server Shutdown failed: %w", err)
+	if err := httpsServer.Shutdown(shutdownCtx); err != nil {
+		log.Errorf("HTTPS server Shutdown failed: %v", err)
+	}
+
+	if err := metricsServer.Shutdown(shutdownCtx); err != nil {
+		log.Errorf("HTTP server for metrics Shutdown failed: %v", err)
 	}
 
 	return nil
