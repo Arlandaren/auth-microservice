@@ -22,7 +22,6 @@ import (
 	"service/internal/shared/storage/postgres"
 	"service/internal/shared/utils"
 	pb "service/pkg/grpc/auth_v1"
-	"service/pkg/tls"
 	"sync"
 	"syscall"
 	"time"
@@ -31,9 +30,6 @@ import (
 )
 
 func main() {
-	key, cert := tls.CreateAcCertificate()
-	tls.CreateServerCertificate(key, cert)
-
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()

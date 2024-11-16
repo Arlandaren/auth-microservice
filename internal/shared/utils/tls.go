@@ -8,9 +8,9 @@ import (
 )
 
 func LoadServerTLS() (*tls.Config, error) {
-	caCertificate := "./tls_certificates/caCertificate.pem"
-	serverCertificate := "./tls_certificates/serverCertificate.pem"
-	serverPrivateKey := "./tls_certificates/serverPrivateKey.pem"
+	caCertificate := "tls_certificates/ca.crt"
+	serverCertificate := "tls_certificates/server.crt"
+	serverPrivateKey := "tls_certificates/server.key"
 
 	serverCert, err := tls.LoadX509KeyPair(serverCertificate, serverPrivateKey)
 	if err != nil {
@@ -33,9 +33,9 @@ func LoadServerTLS() (*tls.Config, error) {
 }
 
 func LoadServerTLSCredentials() (credentials.TransportCredentials, error) {
-	caCertificate := "./tls_certificates/caCertificate.pem"
-	serverCertificate := "./tls_certificates/serverCertificate.pem"
-	serverPrivateKey := "./tls_certificates/serverPrivateKey.pem"
+	caCertificate := "tls_certificates/ca.crt"
+	serverCertificate := "tls_certificates/server.crt"
+	serverPrivateKey := "tls_certificates/server.key"
 
 	serverCert, err := tls.LoadX509KeyPair(serverCertificate, serverPrivateKey)
 	if err != nil {
@@ -59,9 +59,9 @@ func LoadServerTLSCredentials() (credentials.TransportCredentials, error) {
 }
 
 func LoadClientTLSCredentials() (credentials.TransportCredentials, error) {
-	caCertificate := "./tls_certificates/caCertificate.pem"
-	clientCertificate := "./tls_certificates/clientCertificate.pem"
-	clientPrivateKey := "./tls_certificates/clientPrivateKey.pem"
+	caCertificate := "tls_certificates/ca.crt"
+	clientCertificate := "tls_certificates/client.crt"
+	clientPrivateKey := "tls_certificates/client.key"
 
 	clientCert, err := tls.LoadX509KeyPair(clientCertificate, clientPrivateKey)
 	if err != nil {
