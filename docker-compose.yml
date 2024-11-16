@@ -8,10 +8,15 @@ services:
       - ./nginx.shield.conf:/etc/nginx/nginx.conf
       - ./certificates:/certificates
     ports:
+      - "8080:80"
       - "8081:8443"
       - "8080:443"
     depends_on:
       - auth_service
+    networks:
+      - monitoring
+    labels:
+      loki: 'true'
 
   postgres:
     image: postgres:latest
@@ -25,6 +30,10 @@ services:
       - pg_data:/var/lib/postgresql/data/pgdata
     ports:
       - "5434:5432"
+    networks:
+      - monitoring
+    labels:
+      loki: 'true'  # Добавлено для Promtail
 
   auth_service:
     build: .
@@ -41,8 +50,77 @@ services:
     ports:
       - "8090:8086"
       - "8091:50051"
+    networks:
+      - monitoring
+    labels:
+      loki: 'true'  # Добавлено для Promtail
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - nginx-exporter
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki  # Добавлено, чтобы Grafana ждала готовности Loki
+    networks:
+      - monitoring
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    command: >
+      -nginx.scrape-uri http://nginx:82/nginx_status
+      -web.listen-address :9113
+      -web.telemetry-path /metrics
+    depends_on:
+      - nginx
+    networks:
+      - monitoring
+
+  loki:
+    image: grafana/loki:2.8.2
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+      - ./loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - monitoring
+    user: "root"
+
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+    command: -config.file=/etc/promtail/promtail.yaml
+    depends_on:
+      - loki
+    networks:
+      - monitoring
+      - "8090:8086"
+      - "8091:50051"
 
 volumes:
   pg_data:
 
+networks:
+  monitoring:
+    driver: bridge
 

@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 	"service/internal/repository"
 	"service/internal/shared/storage/dto"
 	"service/internal/shared/utils"

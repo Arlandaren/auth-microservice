@@ -7,9 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -17,6 +17,11 @@ import (
 	"service/internal/repository"
 	"service/internal/service"
 	"service/internal/shared/config"
+	"service/internal/shared/logger"
+
+	log "github.com/sirupsen/logrus"
+
+	prometheusModule "service/internal/shared/prometheus"
 	"service/internal/shared/storage/dto"
 	"service/internal/shared/storage/postgres"
 	"service/internal/shared/utils"
@@ -29,9 +34,6 @@ import (
 )
 
 func main() {
-	//key, cert := tls.CreateAcCertificate()
-	//tls.CreateServerCertificate(key, cert)
-
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()
@@ -46,6 +48,9 @@ func main() {
 	serv := service.NewService(repo)
 
 	server := transport.NewServer(serv)
+
+	prom := prometheusModule.NewPrometheus()
+	prom.RegisterMetrics()
 
 	wg := &sync.WaitGroup{}
 	ctx := context.Background()
@@ -131,14 +136,20 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 
 	handler := allowCORS(mux)
 
+	router := http.NewServeMux()
+
+	router.Handle("/metrics", promhttp.Handler())
+
+	router.Handle("/", prometheusModule.MetricsMiddleware(handler))
+
 	tlsConfig, err := utils.LoadServerTLS()
 	if err != nil {
 		return err
 	}
 
 	srv := &http.Server{
-		Addr:      addr.Http,
-		Handler:   handler,
+		Addr:    addr.Http,
+		Handler: router,
 		TLSConfig: tlsConfig,
 	}
 

@@ -2,3 +2,5 @@
 **/.idea/
 external/
 **/external/
+loki-data/
+**/loki-data/
