@@ -6,9 +6,10 @@ services:
     restart: always
     volumes:
       - ./nginx.shield.conf:/etc/nginx/nginx.conf
+      - ./certificates:/certificates
     ports:
-      - "8080:80"
-      - "8081:81"
+      - "8081:8443"
+      - "8080:443"
       - "8082:82"
     depends_on:
       - auth_service
@@ -42,6 +43,7 @@ services:
       - HTTP_ADDRESS=${HTTP_ADDRESS}
     volumes:
       - .:/app
+      - ./certificates:/opt/certificates
     depends_on:
       - postgres
     restart: always
