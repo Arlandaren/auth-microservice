@@ -9,9 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -95,8 +93,7 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(credentials), // Uncomment if using TLS
-		//grpc.Creds(insecure.NewCredentials()),
+		grpc.Creds(credentials),
 		grpc.UnaryInterceptor(service.AuthInterceptor),
 	)
 	reflection.Register(grpcServer)
