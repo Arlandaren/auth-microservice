@@ -7,10 +7,13 @@ services:
     volumes:
       - ./nginx.shield.conf:/etc/nginx/nginx.conf
     ports:
-      - "8081:81"
       - "8080:80"
+      - "8081:81"
+      - "8082:82"
     depends_on:
       - auth_service
+    networks:
+      - monitoring
 
   postgres:
     image: postgres:latest
@@ -24,6 +27,8 @@ services:
       - pg_data:/var/lib/postgresql/data/pgdata
     ports:
       - "5434:5432"
+    networks:
+      - monitoring
 
   auth_service:
     build: .
@@ -37,10 +42,47 @@ services:
       - postgres
     restart: always
     ports:
-       - "8090:8086"
-       - "8091:50051"
+      - "8090:8086"
+      - "8091:50051"
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - nginx-exporter
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    command: >
+      -nginx.scrape-uri http://nginx:82/nginx_status
+      -web.listen-address :9113
+      -web.telemetry-path /metrics
+    depends_on:
+      - nginx
+    networks:
+      - monitoring
 
 volumes:
   pg_data:
 
-
+networks:
+  monitoring:
+    driver: bridge
