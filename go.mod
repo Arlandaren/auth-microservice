@@ -6,6 +6,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0
 	github.com/prometheus/client_golang v1.20.5
+	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/crypto v0.27.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241021214115-324edc3d5d38
 	google.golang.org/grpc v1.67.1

@@ -42,3 +42,7 @@ func GetAddress() *dto.Address {
 		Grpc: grpcAddress,
 	}
 }
+
+func GetEnvironment() string {
+	return os.Getenv("ENVIRONMENT")
+}

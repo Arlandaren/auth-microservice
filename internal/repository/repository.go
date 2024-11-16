@@ -2,7 +2,8 @@ package repository
 
 import (
 	"gorm.io/gorm"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 	"service/internal/shared/storage/dto"
 )
 

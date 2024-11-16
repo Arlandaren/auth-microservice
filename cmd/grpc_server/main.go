@@ -11,7 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -19,6 +18,10 @@ import (
 	"service/internal/repository"
 	"service/internal/service"
 	"service/internal/shared/config"
+	"service/internal/shared/logger"
+
+	log "github.com/sirupsen/logrus"
+
 	prometheusModule "service/internal/shared/prometheus"
 	"service/internal/shared/storage/dto"
 	"service/internal/shared/storage/postgres"
@@ -31,6 +34,8 @@ import (
 )
 
 func main() {
+	logger.Init()
+
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()
@@ -38,7 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("DB connected")
+	log.Println("DB connected")
 
 	repo := repository.NewRepository(db)
 
