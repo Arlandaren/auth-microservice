@@ -38,7 +38,7 @@ var (
 	//		Buckets: prometheus.DefBuckets,
 	//	},
 	//	[]string{"method"},
-	//)
+	//)		решили убрать до лучших времен
 )
 
 type Prometheus struct {
@@ -50,8 +50,8 @@ func NewPrometheus() *Prometheus {
 		metrics: []prometheus.Collector{
 			requestCounter,
 			requestDuration,
-			//grpcRequestCounter,
-			//grpcRequestDuration,
+			//grpcRequestCounter, решено убрать
+			//grpcRequestDuration, решено убрать
 		},
 	}
 }
