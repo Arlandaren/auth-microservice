@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
@@ -117,8 +116,13 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 func startHttpServer(ctx context.Context, addr *dto.Address) error {
 	mux := runtime.NewServeMux()
 
+	creds, err := utils.LoadClientTLSCredentials()
+	if err != nil {
+		return fmt.Errorf("failed to load client TLS credentials: %w", err)
+	}
+
 	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithTransportCredentials(creds),
 	}
 
 	if err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts); err != nil {
@@ -139,7 +143,7 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("HTTP server exited with error: %v", err)
 		}
 	}()

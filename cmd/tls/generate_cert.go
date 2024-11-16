@@ -112,7 +112,7 @@ func CreateServerCertificate(caKey *ecdsa.PrivateKey, caCertificate *x509.Certif
 		Subject: pkix.Name{
 			Organization: []string{"BusinezzHack"},
 		},
-		DNSNames:  []string{"localhost"},
+		DNSNames:  []string{"localhost", "auth_service"},
 		NotBefore: time.Now(),
 		NotAfter:  time.Now().Add(365 * 24 * time.Hour),
 
