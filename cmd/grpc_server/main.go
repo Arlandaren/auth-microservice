@@ -34,6 +34,8 @@ import (
 )
 
 func main() {
+	logger.Init()
+
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()
@@ -41,7 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("DB connected")
+	log.Println("DB connected")
 
 	repo := repository.NewRepository(db)
 
@@ -91,8 +93,7 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.Creds(credentials), // Uncomment if using TLS
-		//grpc.Creds(insecure.NewCredentials()),
+		grpc.Creds(credentials),
 		grpc.UnaryInterceptor(service.AuthInterceptor),
 	)
 	reflection.Register(grpcServer)
@@ -148,8 +149,8 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 	}
 
 	srv := &http.Server{
-		Addr:    addr.Http,
-		Handler: router,
+		Addr:      addr.Http,
+		Handler:   router,
 		TLSConfig: tlsConfig,
 	}
 
