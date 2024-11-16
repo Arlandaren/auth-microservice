@@ -6,3 +6,7 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['nginx-exporter:9113']
+  - job_name: 'auth_service_http'
+    scrape_interval: 15s
+    static_configs:
+      - targets: [ 'auth_service:8086' ]
