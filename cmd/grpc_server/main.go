@@ -9,7 +9,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"net"
 	"net/http"
@@ -25,6 +24,7 @@ import (
 	prometheusModule "service/internal/shared/prometheus"
 	"service/internal/shared/storage/dto"
 	"service/internal/shared/storage/postgres"
+	"service/internal/shared/utils"
 	pb "service/pkg/grpc/auth_v1"
 	"sync"
 	"syscall"
@@ -34,8 +34,6 @@ import (
 )
 
 func main() {
-	logger.Init()
-
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()
@@ -43,7 +41,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("DB connected")
+	log.Printf("DB connected")
 
 	repo := repository.NewRepository(db)
 
@@ -87,16 +85,14 @@ func main() {
 }
 
 func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Address) error {
-
-	// Uncomment and configure the TLS credentials if needed
-	// credentials, err := utils.LoadTLSCredentials()
-	// if err != nil {
-	//     return fmt.Errorf("failed to load TLS credentials: %w", err)
-	// }
+	credentials, err := utils.LoadServerTLSCredentials()
+	if err != nil {
+		return fmt.Errorf("failed to load TLS credentials: %w", err)
+	}
 
 	grpcServer := grpc.NewServer(
-		// grpc.Creds(credentials), // Uncomment if using TLS
-		grpc.Creds(insecure.NewCredentials()),
+		grpc.Creds(credentials), // Uncomment if using TLS
+		//grpc.Creds(insecure.NewCredentials()),
 		grpc.UnaryInterceptor(service.AuthInterceptor),
 	)
 	reflection.Register(grpcServer)
@@ -125,12 +121,16 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 func startHttpServer(ctx context.Context, addr *dto.Address) error {
 	mux := runtime.NewServeMux()
 
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	creds, err := utils.LoadClientTLSCredentials()
+	if err != nil {
+		return fmt.Errorf("failed to load client TLS credentials: %w", err)
 	}
 
-	err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts)
-	if err != nil {
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(creds),
+	}
+
+	if err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts); err != nil {
 		return fmt.Errorf("failed to register service handler: %w", err)
 	}
 
@@ -142,13 +142,19 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 
 	router.Handle("/", prometheusModule.MetricsMiddleware(handler))
 
+	tlsConfig, err := utils.LoadServerTLS()
+	if err != nil {
+		return err
+	}
+
 	srv := &http.Server{
 		Addr:    addr.Http,
 		Handler: router,
+		TLSConfig: tlsConfig,
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("HTTP server exited with error: %v", err)
 		}
 	}()
