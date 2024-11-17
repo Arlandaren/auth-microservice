@@ -119,62 +119,6 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 	return nil
 }
 
-//	func startHttpServer(ctx context.Context, addr *dto.Address) error {
-//		mux := runtime.NewServeMux()
-//
-//		creds, err := utils.LoadClientTLSCredentials()
-//		if err != nil {
-//			return fmt.Errorf("failed to load client TLS credentials: %w", err)
-//		}
-//
-//		opts := []grpc.DialOption{
-//			grpc.WithTransportCredentials(creds),
-//		}
-//
-//		if err := pb.RegisterAuthServiceHandlerFromEndpoint(ctx, mux, addr.Grpc, opts); err != nil {
-//			return fmt.Errorf("failed to register service handler: %w", err)
-//		}
-//
-//		handler := allowCORS(mux)
-//
-//		router := http.NewServeMux()
-//
-//		router.Handle("/metrics", promhttp.Handler())
-//
-//		router.Handle("/", prometheusModule.MetricsMiddleware(handler))
-//
-//		tlsConfig, err := utils.LoadServerTLS()
-//		if err != nil {
-//			return err
-//		}
-//
-//		srv := &http.Server{
-//			Addr:      addr.Http,
-//			Handler:   router,
-//			TLSConfig: tlsConfig,
-//		}
-//
-//		go func() {
-//			if err := srv.ListenAndServeTLS("", ""); err != nil && !errors.Is(err, http.ErrServerClosed) {
-//				log.Printf("HTTP server exited with error: %v", err)
-//			}
-//		}()
-//
-//		log.Printf("HTTP server listening at %v\n", addr.Http)
-//
-//		<-ctx.Done()
-//
-//		log.Println("Shutting down HTTP server...")
-//
-//		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//		defer cancel()
-//
-//		if err := srv.Shutdown(shutdownCtx); err != nil {
-//			return fmt.Errorf("HTTP server Shutdown failed: %w", err)
-//		}
-//
-//		return nil
-//	}
 func startHttpServer(ctx context.Context, addr *dto.Address) error {
 
 	mux := runtime.NewServeMux()
