@@ -31,7 +31,7 @@ func (s *Service) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Re
 	}
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			fmt.Println("registering user")
+			fmt.Println("Registering user")
 		} else {
 			return nil, err
 		}
@@ -41,7 +41,7 @@ func (s *Service) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Re
 	if err != nil {
 		return nil, err
 	}
-	log.Println("hash", hash)
+	log.Println("HashPass was generated:", hash)
 	user := dto.User{
 		Name:     req.Name,
 		Password: hash,
@@ -52,12 +52,12 @@ func (s *Service) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Re
 	if err != nil {
 		return nil, err
 	}
-	log.Println("user created: ", user)
+	log.Println("User was created: ", user)
 	tokenString, err := utils.GenerateToken(user.ID, user.Role)
 	if err != nil {
 		return nil, err
 	}
-	log.Println("token: ", tokenString)
+	log.Println("Token was generated: ", tokenString)
 
 	return &pb.RegisterResponse{Token: tokenString}, nil
 }
@@ -93,7 +93,7 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 	}
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			fmt.Println("registering user")
+			fmt.Println("Registering user")
 		} else {
 			return nil, err
 		}
@@ -103,7 +103,7 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 	if err != nil {
 		return nil, err
 	}
-	log.Println("hash", hash)
+	log.Println("HashPass was generated:", hash)
 	user := dto.User{
 		Name:     req.Name,
 		Password: hash,
@@ -114,7 +114,7 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 	if err != nil {
 		return nil, err
 	}
-	log.Println("admin-user created: ", user)
+	log.Println("User-admin was created: ", user)
 
 	return &pb.RegisterAdminResponse{Id: int64(user.ID)}, nil
 }

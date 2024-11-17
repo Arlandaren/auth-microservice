@@ -84,6 +84,7 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 	if err != nil {
 		return fmt.Errorf("failed to load TLS credentials: %w", err)
 	}
+	log.Println("LoadServerTLSCredentials was successfully uploaded")
 
 	grpcServer := grpc.NewServer(
 		grpc.Creds(credentials), // Uncomment if using TLS
@@ -100,7 +101,8 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 
 	go func() {
 		if err := grpcServer.Serve(lis); err != nil && !errors.Is(err, grpc.ErrServerStopped) {
-			log.Printf("gRPC server failed: %v", err)
+			log.Printf("gRPC server listen failed: %v", err)
+			return
 		}
 	}()
 
@@ -120,6 +122,7 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 	if err != nil {
 		return fmt.Errorf("failed to load client TLS credentials: %w", err)
 	}
+	log.Println("LoadClientTLSCredentials was successfully uploaded")
 
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(creds),
@@ -133,8 +136,10 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 
 	tlsConfig, err := utils.LoadServerTLS()
 	if err != nil {
+		log.Printf("failed to load server TLS: %v\n", err)
 		return err
 	}
+	log.Println("ServerTLS was successfully uploaded")
 
 	srv := &http.Server{
 		Addr:      addr.Http,
