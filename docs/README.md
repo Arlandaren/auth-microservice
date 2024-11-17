@@ -74,8 +74,8 @@ Auth Service состоит из следующих компонентов:
 ### Клонирование репозитория
 
 ```bash
-git clone https://github.com/yourusername/auth_service.git
-cd auth_service
+git clone https://github.com/Arlandaren/auth-microservice.git
+cd auth_microservice
 ```
 
 ### Переменные окружения
