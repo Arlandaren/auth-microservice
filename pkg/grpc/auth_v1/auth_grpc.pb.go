@@ -22,6 +22,8 @@ const (
 	AuthService_Login_FullMethodName         = "/auth_v1.AuthService/Login"
 	AuthService_Register_FullMethodName      = "/auth_v1.AuthService/Register"
 	AuthService_RegisterAdmin_FullMethodName = "/auth_v1.AuthService/RegisterAdmin"
+	AuthService_LoginOIDC_FullMethodName     = "/auth_v1.AuthService/LoginOIDC"
+	AuthService_Callback_FullMethodName      = "/auth_v1.AuthService/Callback"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -31,6 +33,8 @@ type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	RegisterAdmin(ctx context.Context, in *RegisterAdminRequest, opts ...grpc.CallOption) (*RegisterAdminResponse, error)
+	LoginOIDC(ctx context.Context, in *LoginOIDCRequest, opts ...grpc.CallOption) (*LoginOIDCResponse, error)
+	Callback(ctx context.Context, in *CallbackOIDCRequest, opts ...grpc.CallOption) (*CallbackOIDCResponse, error)
 }
 
 type authServiceClient struct {
@@ -71,6 +75,26 @@ func (c *authServiceClient) RegisterAdmin(ctx context.Context, in *RegisterAdmin
 	return out, nil
 }
 
+func (c *authServiceClient) LoginOIDC(ctx context.Context, in *LoginOIDCRequest, opts ...grpc.CallOption) (*LoginOIDCResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginOIDCResponse)
+	err := c.cc.Invoke(ctx, AuthService_LoginOIDC_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) Callback(ctx context.Context, in *CallbackOIDCRequest, opts ...grpc.CallOption) (*CallbackOIDCResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CallbackOIDCResponse)
+	err := c.cc.Invoke(ctx, AuthService_Callback_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	RegisterAdmin(context.Context, *RegisterAdminRequest) (*RegisterAdminResponse, error)
+	LoginOIDC(context.Context, *LoginOIDCRequest) (*LoginOIDCResponse, error)
+	Callback(context.Context, *CallbackOIDCRequest) (*CallbackOIDCResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest
 }
 func (UnimplementedAuthServiceServer) RegisterAdmin(context.Context, *RegisterAdminRequest) (*RegisterAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAdmin not implemented")
+}
+func (UnimplementedAuthServiceServer) LoginOIDC(context.Context, *LoginOIDCRequest) (*LoginOIDCResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginOIDC not implemented")
+}
+func (UnimplementedAuthServiceServer) Callback(context.Context, *CallbackOIDCRequest) (*CallbackOIDCResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Callback not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +204,42 @@ func _AuthService_RegisterAdmin_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_LoginOIDC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginOIDCRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).LoginOIDC(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_LoginOIDC_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).LoginOIDC(ctx, req.(*LoginOIDCRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_Callback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CallbackOIDCRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).Callback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_Callback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).Callback(ctx, req.(*CallbackOIDCRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +258,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAdmin",
 			Handler:    _AuthService_RegisterAdmin_Handler,
+		},
+		{
+			MethodName: "LoginOIDC",
+			Handler:    _AuthService_LoginOIDC_Handler,
+		},
+		{
+			MethodName: "Callback",
+			Handler:    _AuthService_Callback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

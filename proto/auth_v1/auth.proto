@@ -34,6 +34,23 @@ message RegisterAdminResponse {
   int64 id = 1;
 }
 
+message LoginOIDCRequest {
+  string state = 1;
+}
+
+message LoginOIDCResponse {
+  string url = 1;
+}
+
+message CallbackOIDCRequest {
+  string code = 1;
+  string state = 2;
+}
+
+message CallbackOIDCResponse {
+  string message = 1;
+}
+
 message User {
   int64 id = 1;
   string password = 2;
@@ -55,7 +72,20 @@ service AuthService {
   };
   rpc RegisterAdmin(RegisterAdminRequest) returns (RegisterAdminResponse){
     option (google.api.http) = {
-    post: "/v1/auth/register/admin"
+      post: "/v1/auth/register/admin"
+      body: "*"
+    };
+  };
+  rpc LoginOIDC (LoginOIDCRequest) returns (LoginOIDCResponse){
+    option (google.api.http) = {
+      post: "/v1/auth/oidc/login"
+      body: "*"
+    };
+  };
+
+  rpc Callback (CallbackOIDCRequest) returns (CallbackOIDCResponse){
+    option (google.api.http) = {
+      post: "/v1/auth/oidc/callback"
       body: "*"
     };
   };
