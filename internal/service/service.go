@@ -119,3 +119,11 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 
 	return &pb.RegisterAdminResponse{Id: int64(user.ID)}, nil
 }
+
+func (s *Service) LoginOIDC(ctx context.Context, req *pb.LoginOIDCRequest) (*pb.LoginOIDCResponse, error) {
+	return nil, nil
+}
+
+func (s *Service) Callback(ctx context.Context, req *pb.CallbackOIDCRequest) (*pb.CallbackOIDCResponse, error) {
+	return nil, nil
+}

@@ -43,3 +43,11 @@ func (s *Server) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminRequest
 
 	return s.Service.RegisterAdmin(ctx, req, role)
 }
+
+func (s *Server) LoginOIDC(ctx context.Context, req *pb.LoginOIDCRequest) (*pb.LoginOIDCResponse, error) {
+	return s.Service.LoginOIDC(ctx, req)
+}
+
+func (s *Server) Callback(ctx context.Context, req *pb.CallbackOIDCRequest) (*pb.CallbackOIDCResponse, error) {
+	return s.Service.Callback(ctx, req)
+}

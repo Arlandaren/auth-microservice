@@ -76,14 +76,14 @@ service AuthService {
       body: "*"
     };
   };
-  rpc LoginOIDC (LoginOIDCRequest) returns (LoginOIDCResponse){
+  rpc LoginOIDC(LoginOIDCRequest) returns (LoginOIDCResponse){
     option (google.api.http) = {
       post: "/v1/auth/oidc/login"
       body: "*"
     };
   };
 
-  rpc Callback (CallbackOIDCRequest) returns (CallbackOIDCResponse){
+  rpc Callback(CallbackOIDCRequest) returns (CallbackOIDCResponse){
     option (google.api.http) = {
       post: "/v1/auth/oidc/callback"
       body: "*"
