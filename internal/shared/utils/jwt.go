@@ -17,7 +17,7 @@ func GenerateToken(userId int, role string) (string, error) {
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
-			Issuer:    "Auth",
+			Issuer:    "auth_service",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
