@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"service/internal/shared/storage/dto"
 )
@@ -19,7 +18,7 @@ func GetPostgres() (*dto.PostgresConfig, error) {
 
 func GetJwt() string {
 	jwt := os.Getenv("jwt_key")
-	fmt.Println(jwt)
+
 	if jwt == "" {
 		return "secret"
 	}
