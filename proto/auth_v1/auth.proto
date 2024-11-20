@@ -34,21 +34,35 @@ message RegisterAdminResponse {
   int64 id = 1;
 }
 
-message LoginOIDCRequest {
-  string state = 1;
+message OIDCTokenRequest {
+  string response_type = 1;
+  string client_id = 2;
+  string nonce = 4;
+  string redirect_uri = 5;
+  string code_challenge = 6;
+  string code_challenge_method = 7;
+  string name = 8;
+  string password = 9;
 }
 
-message LoginOIDCResponse {
-  string url = 1;
+message OIDCTokenResponse {
 }
 
-message CallbackOIDCRequest {
-  string code = 1;
-  string state = 2;
+message OIDCExchangeRequest {
+  string grant_type = 1;
+  string code = 2;
+  string redirect_uri = 3;
+  string client_id = 4;
+  string client_secret = 5;
+  string code_verifier = 6;
 }
 
-message CallbackOIDCResponse {
-  string message = 1;
+message OIDCExchangeResponse {
+  string access_token = 1;
+  string id_token = 2;
+  string token_type = 3;
+  string expires_in = 4;
+  string scope = 5;
 }
 
 message User {
@@ -76,16 +90,16 @@ service AuthService {
       body: "*"
     };
   };
-  rpc LoginOIDC(LoginOIDCRequest) returns (LoginOIDCResponse){
+  rpc OIDCToken(OIDCTokenRequest) returns (OIDCTokenResponse){
     option (google.api.http) = {
-      post: "/v1/auth/oidc/login"
+      post: "/v1/auth/oidc/token"
       body: "*"
     };
   };
 
-  rpc Callback(CallbackOIDCRequest) returns (CallbackOIDCResponse){
+  rpc OIDCExchange(OIDCExchangeRequest) returns (OIDCExchangeResponse){
     option (google.api.http) = {
-      post: "/v1/auth/oidc/callback"
+      post: "/v1/auth/oidc/exchange"
       body: "*"
     };
   };

@@ -47,14 +47,7 @@ func GetEnvironment() string {
 	return os.Getenv("ENVIRONMENT")
 }
 
-func GetAccessData() *dto.AccessData {
-	clientID := os.Getenv("CLIENT_ID")
-	clientSecret := os.Getenv("CLIENT_SECRET")
-	redirectUrl := os.Getenv("REDIRECT_URL")
-
-	return &dto.AccessData{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		RedirectURL:  redirectUrl,
-	}
+func GetPrivateKey() []byte {
+	privateKey := os.Getenv("PRIVATE_KEY_RSA_FOR_ID_TOKEN")
+	return privateKey
 }

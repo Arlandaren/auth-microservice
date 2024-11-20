@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
@@ -30,7 +31,15 @@ func main() {
 func GeneratePrivateKey() *ecdsa.PrivateKey {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
-		log.Fatalf("Не удалось сгенерировать приватный ключ: %v", err)
+		log.Fatalf("Не удалось сгенерировать приватный ECDSA ключ: %v", err)
+	}
+	return privateKey
+}
+
+func GeneratePrivateKeyRSA() *rsa.PrivateKey {
+	privateKey, err := rsa.GenerateKey(rand.Reader, 256)
+	if err != nil {
+		log.Fatalf("Не удалось сгенерировать приватный RSA ключ: %v", err)
 	}
 	return privateKey
 }

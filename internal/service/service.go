@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 	"service/internal/repository"
@@ -120,10 +121,43 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 	return &pb.RegisterAdminResponse{Id: int64(user.ID)}, nil
 }
 
-func (s *Service) LoginOIDC(ctx context.Context, req *pb.LoginOIDCRequest) (*pb.LoginOIDCResponse, error) {
-	return nil, nil
+func (s *Service) OIDCToken(ctx context.Context, req *pb.OIDCTokenRequest) (*pb.OIDCTokenResponse, error) {
+	// Проверяем ClientID на существование в DB
+	result, err := s.repo.CheckClientID(req.ClientId)
+	if err != nil {
+		return nil, err
+	}
+	if !result {
+		return nil, errors.New("данный token_id на найден в базе")
+	}
+
+	// Проверяем пользователя на нахождение в DB
+	user, err := s.repo.GetUserByName(req.Name)
+	if err != nil {
+		return nil, errors.New("name does not exist")
+	}
+	err = utils.ComparePassword(user.Password, req.Password)
+	if err != nil {
+		return nil, errors.New("invalid name or password")
+	}
+
+	// с idToken реализовать публикацию public-key id_token
+	// Генерируем idToken
+	idToken, err := utils.GenerateIDToken(strconv.Itoa(user.ID), req.ClientId, "auth-microservice", prKey)
+	if err != nil {
+		return nil, fmt.Errorf("не удалось сгенерировать id_token, error: %q", err)
+	}
+
+	// Генерируем authCode
+	authCode, err := utils.GenerateAuthCode(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.OIDCTokenResponse{}
+	return response, nil
 }
 
-func (s *Service) Callback(ctx context.Context, req *pb.CallbackOIDCRequest) (*pb.CallbackOIDCResponse, error) {
+func (s *Service) OIDCExchange(ctx context.Context, req *pb.OIDCExchangeRequest) (*pb.OIDCExchangeResponse, error) {
 	return nil, nil
 }

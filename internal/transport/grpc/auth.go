@@ -44,10 +44,10 @@ func (s *Server) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminRequest
 	return s.Service.RegisterAdmin(ctx, req, role)
 }
 
-func (s *Server) LoginOIDC(ctx context.Context, req *pb.LoginOIDCRequest) (*pb.LoginOIDCResponse, error) {
-	return s.Service.LoginOIDC(ctx, req)
+func (s *Server) OIDCToken(ctx context.Context, req *pb.OIDCTokenRequest) (*pb.OIDCTokenResponse, error) {
+	return s.Service.OIDCToken(ctx, req)
 }
 
-func (s *Server) Callback(ctx context.Context, req *pb.CallbackOIDCRequest) (*pb.CallbackOIDCResponse, error) {
-	return s.Service.Callback(ctx, req)
+func (s *Server) OIDCExchange(ctx context.Context, req *pb.OIDCExchangeRequest) (*pb.OIDCExchangeResponse, error) {
+	return s.Service.OIDCExchange(ctx, req)
 }

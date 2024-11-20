@@ -43,3 +43,23 @@ func (r *Repository) GetUserByName(userName string) (*dto.User, error) {
 	}
 	return &user, nil
 }
+
+func (r *Repository) CheckClientID(clientID string) (bool, error) {
+	return true, nil
+}
+
+func (r *Repository) CheckClientSecret(clientSecret string) (bool, error) {
+	return true, nil
+}
+
+func (r *Repository) NewAuthCode() error {
+	return nil
+}
+
+func (r *Repository) NewIDToken() error {
+	return nil
+}
+
+func (r *Repository) NewClientIDandClientSecret(clientID string) error {
+	return nil
+}
