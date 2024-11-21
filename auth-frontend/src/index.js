@@ -21,10 +21,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
-        <App/>
+        <App />
       </SnackbarProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
-

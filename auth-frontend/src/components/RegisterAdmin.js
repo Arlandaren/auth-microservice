@@ -9,9 +9,10 @@ import {
   Box,
   CircularProgress,
 } from '@mui/material';
-import axios from '../api'; // Исправлено имя файла на 'api' с маленькой буквы
+import axios from '../api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import useRoleCheck from '../hooks/useRoleCheck';
 
 function RegisterAdmin() {
   const [name, setName] = useState('');
@@ -21,6 +22,9 @@ function RegisterAdmin() {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  // Используем хук для проверки роли пользователя
+  useRoleCheck(['Supreme', 'Client_Supreme']);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

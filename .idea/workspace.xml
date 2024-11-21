@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e39000eb-993e-42e6-8a1a-d6cad471f10b" name="Changes" comment="fix: dockerfile location, cors method cahnged">
-      <change afterPath="$PROJECT_DIR$/backend/internal/transport/http/handlers.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/nginx.shield.conf.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/grpc_server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/grpc_server/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/shared/storage/dto/roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/shared/storage/dto/roles.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/nginx.shield.conf" beforeDir="false" afterPath="$PROJECT_DIR$/backend/nginx.shield.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/PrivateRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/PrivateRoute.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/components/Register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/components/RegisterAdmin.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/components/RegisterAdmin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/components/RegisterClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/components/RegisterClient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-frontend/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth-frontend/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/proto/auth_v1/auth.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/auth_v1/auth.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

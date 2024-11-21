@@ -12,6 +12,7 @@ import {
 import axios from '../api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { jwtDecode } from 'jwt-decode';
 
 function RegisterClient() {
   const [name, setName] = useState('');
@@ -19,6 +20,33 @@ function RegisterClient() {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
+  // Проверка роли пользователя при загрузке компонента
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    let userRole = null;
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        userRole = decodedToken.role || null;
+      } catch (error) {
+        console.error('Ошибка декодирования токена:', error);
+        // В случае ошибки перенаправляем на страницу входа
+        navigate('/login');
+      }
+    } else {
+      // Если токена нет, перенаправляем на страницу входа
+      navigate('/login');
+    }
+
+    // Разрешенные роли для доступа к этому компоненту
+    const allowedRoles = ['Supreme', 'Client_Supreme', 'Admin'];
+    if (!allowedRoles.includes(userRole)) {
+      // Если роль не соответствует, перенаправляем на клиентское приложение
+      window.location.href = 'http://localhost:3002'; // Замените на URL вашего клиентского приложения
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -86,7 +86,7 @@ func initializeDefaultUser(db *gorm.DB, clientID int) error {
 			ClientID: clientID,
 			Name:     "root",
 			Password: passwordHash,
-			Role:     "supreme",
+			Role:     "Supreme",
 		}
 
 		if err := db.Create(&defaultUser).Error; err != nil {

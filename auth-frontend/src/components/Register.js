@@ -1,10 +1,18 @@
 // src/components/Register.js
 
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, CircularProgress } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  CircularProgress,
+} from '@mui/material';
 import axios from '../api';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import {jwtDecode} from 'jwt-decode';
 
 function Register() {
   const [name, setName] = useState('');
@@ -12,23 +20,55 @@ function Register() {
   const [clientId, setClientId] = useState('');
   const [role, setRole] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Извлекаем redirect_uri из параметров URL
+  const params = new URLSearchParams(location.search);
+  const redirectUri = params.get('redirect_uri');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await axios.post('/v1/auth/register', {
+      const response = await axios.post('/v1/auth/register', {
         name,
         password,
         clientId: parseInt(clientId),
         role,
       });
 
-      enqueueSnackbar('Регистрация успешна! Теперь вы можете войти.', { variant: 'success' });
-      navigate('/login');
+      const token = response.data.token;
+
+      if (token) {
+        localStorage.setItem('token', token);
+
+        // Получаем роль пользователя из токена
+        let userRole = null;
+        try {
+          const decodedToken = jwtDecode(token);
+          userRole = decodedToken.role || null;
+        } catch (error) {
+          console.error('Ошибка декодирования токена:', error);
+        }
+
+        const allowedRoles = ['Supreme', 'Client_Supreme'];
+
+        if (!allowedRoles.includes(userRole)) {
+          // Пользователь имеет другую роль, перенаправляем на клиентское приложение
+          const redirectURL = new URL(redirectUri || 'http://localhost:3002');
+          redirectURL.hash = `token=${token}`;
+          window.location.href = redirectURL.toString();
+        } else {
+          // Пользователь имеет роль 'Supreme' или 'Client_Supreme'
+          enqueueSnackbar('Вы успешно зарегистрировались!', { variant: 'success' });
+          navigate('/dashboard');
+        }
+      } else {
+        enqueueSnackbar('Не удалось получить токен после регистрации', { variant: 'error' });
+      }
     } catch (error) {
       console.error('Ошибка при регистрации:', error);
       enqueueSnackbar('Не удалось зарегистрироваться', { variant: 'error' });
@@ -38,6 +78,7 @@ function Register() {
   };
 
   return (
+    // Ваш JSX для формы регистрации
     <Container maxWidth="xs">
       <Box sx={{ mt: 8 }}>
         <Typography component="h1" variant="h5" align="center">
