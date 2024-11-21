@@ -138,7 +138,9 @@ func startHttpServer(ctx context.Context, addr *dto.Address) error {
 		return fmt.Errorf("failed to register service handler: %w", err)
 	}
 
-	handler := allowCORS(mux)
+	c := allowCORS()
+
+	handler := c.Handler(mux)
 
 	wrappedHandler := prometheusModule.MetricsMiddleware(handler)
 
