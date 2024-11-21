@@ -1,6 +1,6 @@
 package dto
 
-const AdminRole = "admin"
-const UserRole = "user"
-const ClientSupremeRole = "client_supreme"
-const SupremeRole = "supreme"
+const AdminRole = "Admin"
+const UserRole = "User"
+const ClientSupremeRole = "Client_Supreme"
+const SupremeRole = "Supreme"

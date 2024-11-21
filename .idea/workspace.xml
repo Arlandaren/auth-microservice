@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e39000eb-993e-42e6-8a1a-d6cad471f10b" name="Changes" comment="structure: project structure for frontend and backend separately">
+    <list default="true" id="e39000eb-993e-42e6-8a1a-d6cad471f10b" name="Changes" comment="fix: dockerfile location, cors method cahnged">
+      <change afterPath="$PROJECT_DIR$/backend/internal/transport/http/handlers.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/nginx.shield.conf.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/grpc_server/cors.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/grpc_server/cors.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/cmd/grpc_server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/grpc_server/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/shared/storage/dto/roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/shared/storage/dto/roles.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/nginx.shield.conf" beforeDir="false" afterPath="$PROJECT_DIR$/backend/nginx.shield.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,7 +310,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="infrastructure: docker configured to use nginx" />
     <MESSAGE value="chore: implemented rest gateway server" />
     <MESSAGE value="infrastructure: nginx configured as revers proxy and antiDDOS rate limiter" />
     <MESSAGE value="feat: role system" />
@@ -335,7 +334,8 @@
     <MESSAGE value="refactor: issuer name in jwt token signature" />
     <MESSAGE value="feat: functionality for client management system" />
     <MESSAGE value="structure: project structure for frontend and backend separately" />
-    <option name="LAST_COMMIT_MESSAGE" value="structure: project structure for frontend and backend separately" />
+    <MESSAGE value="fix: dockerfile location, cors method cahnged" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: dockerfile location, cors method cahnged" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
