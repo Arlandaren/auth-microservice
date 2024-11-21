@@ -9,6 +9,7 @@ import "google/api/annotations.proto";
 message LoginRequest {
   string name = 1;
   string password = 2;
+  int64 clientId = 3;
 }
 
 message LoginResponse {
@@ -17,7 +18,9 @@ message LoginResponse {
 
 message RegisterRequest {
   string name = 1;
-  string password = 2;
+  int64 clientId = 2;
+  string password = 3;
+  string role = 4;
 }
 
 message RegisterResponse {
@@ -26,8 +29,9 @@ message RegisterResponse {
 
 message RegisterAdminRequest {
   string name = 1;
-  string password = 2;
-  string role = 3;
+  int64 clientId = 2;
+  string password = 3;
+  string role = 4;
 }
 
 message RegisterAdminResponse {
@@ -38,6 +42,17 @@ message User {
   int64 id = 1;
   string password = 2;
   string name = 3;
+}
+
+message Client {
+  int64 id = 1;
+  string name = 2;
+  repeated string roles = 3;
+}
+
+message RegisterClientRequest {
+  string name = 1;
+  repeated string roles = 2;
 }
 
 service AuthService {
@@ -59,4 +74,10 @@ service AuthService {
       body: "*"
     };
   };
+  rpc RegisterClient(RegisterClientRequest) returns (Client){
+    option (google.api.http) = {
+      post: "/v1/auth/register/client"
+      body: "*"
+    };
+  }
 }

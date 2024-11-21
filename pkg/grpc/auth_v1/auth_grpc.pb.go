@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName         = "/auth_v1.AuthService/Login"
-	AuthService_Register_FullMethodName      = "/auth_v1.AuthService/Register"
-	AuthService_RegisterAdmin_FullMethodName = "/auth_v1.AuthService/RegisterAdmin"
+	AuthService_Login_FullMethodName          = "/auth_v1.AuthService/Login"
+	AuthService_Register_FullMethodName       = "/auth_v1.AuthService/Register"
+	AuthService_RegisterAdmin_FullMethodName  = "/auth_v1.AuthService/RegisterAdmin"
+	AuthService_RegisterClient_FullMethodName = "/auth_v1.AuthService/RegisterClient"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -31,6 +32,7 @@ type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	RegisterAdmin(ctx context.Context, in *RegisterAdminRequest, opts ...grpc.CallOption) (*RegisterAdminResponse, error)
+	RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*Client, error)
 }
 
 type authServiceClient struct {
@@ -71,6 +73,16 @@ func (c *authServiceClient) RegisterAdmin(ctx context.Context, in *RegisterAdmin
 	return out, nil
 }
 
+func (c *authServiceClient) RegisterClient(ctx context.Context, in *RegisterClientRequest, opts ...grpc.CallOption) (*Client, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Client)
+	err := c.cc.Invoke(ctx, AuthService_RegisterClient_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	RegisterAdmin(context.Context, *RegisterAdminRequest) (*RegisterAdminResponse, error)
+	RegisterClient(context.Context, *RegisterClientRequest) (*Client, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest
 }
 func (UnimplementedAuthServiceServer) RegisterAdmin(context.Context, *RegisterAdminRequest) (*RegisterAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAdmin not implemented")
+}
+func (UnimplementedAuthServiceServer) RegisterClient(context.Context, *RegisterClientRequest) (*Client, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterClient not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +188,24 @@ func _AuthService_RegisterAdmin_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_RegisterClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterClientRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RegisterClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RegisterClient_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RegisterClient(ctx, req.(*RegisterClientRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAdmin",
 			Handler:    _AuthService_RegisterAdmin_Handler,
+		},
+		{
+			MethodName: "RegisterClient",
+			Handler:    _AuthService_RegisterClient_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

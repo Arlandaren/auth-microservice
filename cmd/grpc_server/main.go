@@ -18,6 +18,7 @@ import (
 	"service/internal/service"
 	"service/internal/shared/config"
 	"service/internal/shared/logger"
+	"service/internal/shared/storage/redis"
 
 	log "github.com/sirupsen/logrus"
 
@@ -35,7 +36,7 @@ import (
 
 func main() {
 	logger.Init()
-
+	ctx := context.Background()
 	addresses := config.GetAddress()
 
 	db, err := postgres.InitDB()
@@ -45,7 +46,9 @@ func main() {
 
 	log.Println("DB connected")
 
-	repo := repository.NewRepository(db)
+	rdb := redis.ConnectRedis(ctx)
+
+	repo := repository.NewRepository(db, rdb)
 
 	serv := service.NewService(repo)
 
@@ -55,7 +58,6 @@ func main() {
 	prom.RegisterMetrics()
 
 	wg := &sync.WaitGroup{}
-	ctx := context.Background()
 
 	wg.Add(1)
 	go func() {
@@ -94,7 +96,7 @@ func RunGrpcServer(ctx context.Context, server *transport.Server, addr *dto.Addr
 
 	grpcServer := grpc.NewServer(
 		grpc.Creds(credentials),
-		grpc.UnaryInterceptor(service.AuthInterceptor),
+		grpc.UnaryInterceptor(service.AuthInterceptor(server.Service.Repo, ctx)),
 	)
 	reflection.Register(grpcServer)
 	pb.RegisterAuthServiceServer(grpcServer, server)

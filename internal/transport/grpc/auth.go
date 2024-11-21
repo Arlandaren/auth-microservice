@@ -43,3 +43,16 @@ func (s *Server) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminRequest
 
 	return s.Service.RegisterAdmin(ctx, req, role)
 }
+
+func (s *Server) RegisterClient(ctx context.Context, req *pb.RegisterClientRequest) (*pb.Client, error) {
+	roleValue := ctx.Value("role")
+	if roleValue == nil {
+		return nil, status.Error(codes.Unauthenticated, "Undefined role")
+	}
+	role, ok := roleValue.(string)
+	if !ok {
+		return nil, status.Error(codes.Unauthenticated, "Invalid role type")
+	}
+
+	return s.Service.RegisterClient(ctx, req, role)
+}
