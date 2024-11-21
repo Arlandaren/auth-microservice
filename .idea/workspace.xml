@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e39000eb-993e-42e6-8a1a-d6cad471f10b" name="Changes" comment="refactor: issuer name in jwt token signature">
+      <change afterPath="$PROJECT_DIR$/internal/shared/storage/dto/client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/shared/storage/redis/redis.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/shared/utils/access.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/shared/utils/encryption_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/grpc_server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/grpc_server/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/interceptor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/storage/dto/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/storage/dto/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/storage/dto/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/storage/dto/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/storage/dto/roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/storage/dto/roles.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/storage/dto/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/storage/dto/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/storage/postgres/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/storage/postgres/postgres.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/utils/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/utils/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shared/utils/password.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shared/utils/password.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/transport/grpc/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/transport/grpc/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth.pb.gw.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/grpc/auth_v1/auth_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proto/auth_v1/auth.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/auth_v1/auth.proto" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../Program Files/Go" />
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="TiXkit &lt;dnsjsngfsh@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feat/oidc-new" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDONNLGU86CI08t&quot;,
+        &quot;number&quot;: 4
+      },
+      &quot;lastSeen&quot;: 1731788138344
+    },
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDONNLGU86CI2-o&quot;,
+        &quot;number&quot;: 5
+      },
+      &quot;lastSeen&quot;: 1731789217259
+    }
+  ]
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="branchesCleanupHistory">
+      <BranchesCleanupHistory>
+        <option name="history">
+          <list>
+            <BranchCleanupEntry>
+              <option name="deletions">
+                <list>
+                  <BranchDeletion>
+                    <option name="hash" value="6f361afe939753479c6f32ee7698aa735d36237f" />
+                    <option name="name" value="chore/nginx" />
+                  </BranchDeletion>
+                </list>
+              </option>
+              <option name="timestamp" value="1731682525020" />
+            </BranchCleanupEntry>
+            <BranchCleanupEntry>
+              <option name="deletions">
+                <list>
+                  <BranchDeletion>
+                    <option name="hash" value="e13f51fb6537e093d1c1e41154502b1abd7e9c96" />
+                    <option name="name" value="chore/role-system" />
+                  </BranchDeletion>
+                </list>
+              </option>
+              <option name="timestamp" value="1731683332665" />
+            </BranchCleanupEntry>
+            <BranchCleanupEntry>
+              <option name="deletions">
+                <list>
+                  <BranchDeletion>
+                    <option name="hash" value="d7cbf54baecbbc1ea7c8020537d371c0f2e28933" />
+                    <option name="name" value="feat/logs-metrics-repair" />
+                  </BranchDeletion>
+                  <BranchDeletion>
+                    <option name="hash" value="01a93840e3570bd228f38793bea098cc2c5c19e9" />
+                    <option name="name" value="tls_branch" />
+                  </BranchDeletion>
+                  <BranchDeletion>
+                    <option name="hash" value="77d022efb814ce58761e23b95962fa3c44ee65fa" />
+                    <option name="name" value="feat/logs-metrics" />
+                  </BranchDeletion>
+                </list>
+              </option>
+              <option name="timestamp" value="1731831654171" />
+            </BranchCleanupEntry>
+          </list>
+        </option>
+      </BranchesCleanupHistory>
+    </option>
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feat/client-management" />
+                    <option name="lastUsedInstant" value="1732179490" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feat/oidc-new" />
+                    <option name="lastUsedInstant" value="1732179481" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1732014459" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feat/bank" />
+                    <option name="lastUsedInstant" value="1731957175" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="oidc" />
+                    <option name="lastUsedInstant" value="1731830987" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Arlandaren/auth-microservice.git&quot;,
+    &quot;accountId&quot;: &quot;ffdfac03-bf07-424a-9c24-d74ca4cce007&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;Arlandaren&quot;,
+    &quot;repository&quot;: &quot;auth-microservice&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2ofDFW5AJHT3gF1uMSdINxp62V8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Go Build.go build service/cmd/easy-peasy.executor": "Run",
+    "Go Build.go build service/cmd/tls.executor": "Run",
+    "Go Test.TestEncryptDecrypt in service/internal/shared/utils.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "com.codeium.enabled": "true",
+    "git-widget-placeholder": "feat/client-management",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/hby/go/web-training/auth-microservice/internal/shared/storage/postgres/init.sql",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\hby\go\web-training\auth-microservice" />
+      <recent name="C:\hby\go\web-training\auth-microservice\cmd\grpc_server" />
+      <recent name="C:\hby\go\web-training\auth-microservice\internal\shared\kafka" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\hby\go\web-training\auth-microservice\internal\shared\utils" />
+      <recent name="C:\hby\go\web-training\auth-microservice\internal\shared\storage\redis" />
+      <recent name="C:\hby\go\web-training\auth-microservice\certificates" />
+      <recent name="C:\hby\go\web-training\auth-microservice" />
+      <recent name="C:\hby\go\web-training\auth-microservice\cmd\tls" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Test.TestEncryptDecrypt in service/internal/shared/utils">
+    <configuration name="go build service/cmd/easy-peasy" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="auth-microservice" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="service/cmd/easy-peasy" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/easy-peasy/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build service/cmd/tls" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="auth-microservice" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="service/cmd/tls" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/tls/generate_cert.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestEncryptDecrypt in service/internal/shared/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="auth-microservice" />
+      <working_directory value="$PROJECT_DIR$/internal/shared/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="service/internal/shared/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestEncryptDecrypt\E$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestEncryptDecrypt in service/internal/shared/utils" />
+        <item itemvalue="Go Build.go build service/cmd/tls" />
+        <item itemvalue="Go Build.go build service/cmd/easy-peasy" />
+        <item itemvalue="Go Build.go build service/cmd/tls" />
+        <item itemvalue="Go Build.go build service/cmd/easy-peasy" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-5df93f7ad4aa-df9ad98b711f-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-242.23339.24" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-GO-242.23339.24" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/tls_branch" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="chore: updated git cache" />
+    <MESSAGE value="refactor: changed dgrajalva with vulne on jwt0-go" />
+    <MESSAGE value="infrastructure: docker configured to use nginx" />
+    <MESSAGE value="chore: implemented rest gateway server" />
+    <MESSAGE value="infrastructure: nginx configured as revers proxy and antiDDOS rate limiter" />
+    <MESSAGE value="feat: role system" />
+    <MESSAGE value="feat: prometheus metrics for nginx" />
+    <MESSAGE value="feat: metrics for http server" />
+    <MESSAGE value="feat: mcefs" />
+    <MESSAGE value="feat: tls logic" />
+    <MESSAGE value="chore: remove unused folder" />
+    <MESSAGE value="chore: comments to comments" />
+    <MESSAGE value="fix: added auth_server as domain in tls certificate and changed http server connection to grpc from insecure to tls creds" />
+    <MESSAGE value="feat: loki implemented as log gathering service" />
+    <MESSAGE value="chore: update gitignore" />
+    <MESSAGE value="chore: mod" />
+    <MESSAGE value="fix: fixed trouble with http metric server. now it works correctly by separating it on http and https servers" />
+    <MESSAGE value="style: deleted comment" />
+    <MESSAGE value="chore: update readme" />
+    <MESSAGE value="feat: oidc" />
+    <MESSAGE value="chore: cherry picked oidc" />
+    <MESSAGE value="chore: mod updated" />
+    <MESSAGE value="chore: protogen files generated for protofile specification" />
+    <MESSAGE value="chore: transport layer implementation" />
+    <MESSAGE value="refactor: issuer name in jwt token signature" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: issuer name in jwt token signature" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>36</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>32</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>27</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>12</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>17</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/shared/utils/encryption_test.go</url>
+          <line>22</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
