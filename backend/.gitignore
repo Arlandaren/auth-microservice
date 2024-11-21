@@ -1,6 +1,6 @@
-./.idea
+../.idea
 **/.idea/
-external/
+backend/external/
 **/external/
 loki-data/
 **/loki-data/

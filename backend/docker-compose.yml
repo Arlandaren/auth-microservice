@@ -49,7 +49,7 @@ services:
       loki: 'true'
 
   auth_service:
-    build: .
+    build: ..
     environment:
       - PG_STRING=${PG_STRING}
       - GRPC_ADDRESS=${GRPC_ADDRESS}
