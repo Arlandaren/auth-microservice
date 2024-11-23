@@ -371,7 +371,7 @@ auth_service/
 1. Клонируйте репозиторий Posty:
 
    ```bash
-   git clone https://github.com/Arlandaren/Posty
+   git clone https://github.com/Arlandaren/Posty.git
    cd vtb-api-hackathon-client
    ```
 
