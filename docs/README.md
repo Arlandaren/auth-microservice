@@ -365,3 +365,10 @@ auth_service/
 Если у вас есть вопросы или нужна поддержка, пожалуйста, свяжитесь с нами по [telegram](https://t.me/infoowner).
 
 ---
+
+### Дополнение к решению
+
+Дополнительный сервис Posty для демонстрации возможностей сервиса: [Posty](https://github.com/Arlandaren/vtb-api-hackathon-client)
+---
+
+
