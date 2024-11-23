@@ -23,7 +23,7 @@ func GenerateKeysRSA() {
 
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		log.Fatalf("Не удалось сгенерировать приватный RSA ключ: %v", err)
+		log.Fatalf("Не удалось сгенерировать приватный ключ RSA: %v", err)
 	}
 
 	publicBytes := x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)
