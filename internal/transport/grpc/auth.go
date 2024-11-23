@@ -2,10 +2,9 @@ package grpc
 
 import (
 	"context"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	log "github.com/sirupsen/logrus"
 	"service/internal/service"
 	desc "service/pkg/grpc/auth_v1"
 	pb "service/pkg/grpc/auth_v1"

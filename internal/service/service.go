@@ -4,16 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
-	"strconv"
-
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"service/internal/repository"
 	"service/internal/shared/storage/dto"
 	"service/internal/shared/utils"
+	"service/internal/transport/grpc"
 	pb "service/pkg/grpc/auth_v1"
+	"strconv"
 	"strings"
+	"time"
 )
+
+const Issuer = "auth-microservice"
 
 type Service struct {
 	repo *repository.Repository
@@ -123,12 +126,9 @@ func (s *Service) RegisterAdmin(ctx context.Context, req *pb.RegisterAdminReques
 
 func (s *Service) OIDCToken(ctx context.Context, req *pb.OIDCTokenRequest) (*pb.OIDCTokenResponse, error) {
 	// Проверяем ClientID на существование в DB
-	result, err := s.repo.CheckClientID(req.ClientId)
+	err := s.repo.CheckGetClientID(req.ClientId)
 	if err != nil {
 		return nil, err
-	}
-	if !result {
-		return nil, errors.New("данный token_id на найден в базе")
 	}
 
 	// Проверяем пользователя на нахождение в DB
@@ -141,9 +141,14 @@ func (s *Service) OIDCToken(ctx context.Context, req *pb.OIDCTokenRequest) (*pb.
 		return nil, errors.New("invalid name or password")
 	}
 
-	// с idToken реализовать публикацию public-key id_token
+	// Валидация и подставление значений
+	resultScopes, err := utils.AddScopes(user, req.Scopes, utils.TokenID)
+	if err != nil {
+		return nil, err
+	}
 	// Генерируем idToken
-	idToken, err := utils.GenerateIDToken(strconv.Itoa(user.ID), req.ClientId, "auth-microservice", prKey)
+	idToken, err := utils.GenerateTokenOIDC(strconv.Itoa(user.ID), req.ClientId,
+		Issuer, resultScopes, utils.PrivateKeyAccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("не удалось сгенерировать id_token, error: %q", err)
 	}
@@ -154,10 +159,92 @@ func (s *Service) OIDCToken(ctx context.Context, req *pb.OIDCTokenRequest) (*pb.
 		return nil, err
 	}
 
-	response := &pb.OIDCTokenResponse{}
+	authCodeDTO := dto.AuthCodeOIDC{
+		AuthCode:            authCode,
+		UserID:              user.ID,
+		ClientID:            req.ClientId,
+		RedirectURI:         req.RedirectUri,
+		State:               req.State,
+		CodeChallengeMethod: req.CodeChallengeMethod,
+		CodeChallenge:       req.CodeChallenge,
+		ExpiresAt:           time.Now().Add(8 * 60 * time.Second),
+	}
+	if err := s.repo.NewAuthCode(&authCodeDTO); err != nil {
+		return nil, err
+	}
+
+	response := &pb.OIDCTokenResponse{
+		State:    req.State,
+		IdToken:  idToken,
+		AuthCode: authCode,
+	}
 	return response, nil
 }
 
 func (s *Service) OIDCExchange(ctx context.Context, req *pb.OIDCExchangeRequest) (*pb.OIDCExchangeResponse, error) {
-	return nil, nil
+	// Запросы в базу
+	authCodeOIDC, err := s.repo.GetAuthCodeFromClientID(req.ClientId)
+	if err != nil {
+		return nil, err
+	}
+	clientData, err := s.repo.GetClientIDandClientSecret(req.ClientId)
+	if err != nil {
+		return nil, err
+	}
+	user, err := s.repo.GetUserById(authCodeOIDC.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Проверки перед выдачей accessToken
+	if req.ClientSecret != clientData.ClientSecret {
+		return nil, errors.New("неверный ClientSecret")
+	}
+	if req.Code != authCodeOIDC.AuthCode {
+		return nil, errors.New("неверный AuthCode")
+	}
+	if req.RedirectUri != authCodeOIDC.RedirectURI {
+		return nil, errors.New("uri при получении AuthCode и при получении AccessToken не совпадают")
+	}
+	if time.Now().After(authCodeOIDC.ExpiresAt) {
+		err := s.repo.DeleteAuthCodeFromClientID(req.ClientId)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, errors.New("время действия AuthCode истекло")
+	}
+	if err := utils.VerifyCodeVerifier(req.CodeVerifier, authCodeOIDC.CodeChallengeMethod, authCodeOIDC.CodeChallenge); err != nil {
+		return nil, err
+	}
+
+	// Валидация и подставление значений
+	resultScopes, err := utils.AddScopes(user, authCodeOIDC.Scopes, utils.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	accessToken, err := utils.GenerateTokenOIDC(strconv.Itoa(authCodeOIDC.UserID), authCodeOIDC.ClientID,
+		Issuer, resultScopes, utils.AccessToken)
+
+	TokenDTO := dto.AccessToken{
+		Token:     accessToken,
+		ClientID:  authCodeOIDC.ClientID,
+		UserID:    authCodeOIDC.UserID,
+		TokenType: "bearer",
+		ExpiresAt: time.Now().Add(60 * 60 * time.Second),
+	}
+
+	// Добавление AccessToken в базу
+	if err := s.repo.NewAccessToken(&TokenDTO); err != nil {
+		return nil, err
+	}
+
+	// Отправляем токен клиенту
+	ctx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+	if err := grpc.SendClientRequest(ctx, authCodeOIDC.RedirectURI, &TokenDTO); err != nil {
+		return nil, err
+	}
+
+	return &pb.OIDCExchangeResponse{}, nil
 }

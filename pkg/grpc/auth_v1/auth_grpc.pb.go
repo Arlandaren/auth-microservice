@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName         = "/auth_v1.AuthService/Login"
-	AuthService_Register_FullMethodName      = "/auth_v1.AuthService/Register"
-	AuthService_RegisterAdmin_FullMethodName = "/auth_v1.AuthService/RegisterAdmin"
-	AuthService_OIDCToken_FullMethodName     = "/auth_v1.AuthService/OIDCToken"
-	AuthService_OIDCExchange_FullMethodName  = "/auth_v1.AuthService/OIDCExchange"
+	AuthService_Login_FullMethodName           = "/auth_v1.AuthService/Login"
+	AuthService_Register_FullMethodName        = "/auth_v1.AuthService/Register"
+	AuthService_RegisterAdmin_FullMethodName   = "/auth_v1.AuthService/RegisterAdmin"
+	AuthService_OIDCToken_FullMethodName       = "/auth_v1.AuthService/OIDCToken"
+	AuthService_OIDCExchange_FullMethodName    = "/auth_v1.AuthService/OIDCExchange"
+	AuthService_SendAccessToken_FullMethodName = "/auth_v1.AuthService/SendAccessToken"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -35,6 +36,7 @@ type AuthServiceClient interface {
 	RegisterAdmin(ctx context.Context, in *RegisterAdminRequest, opts ...grpc.CallOption) (*RegisterAdminResponse, error)
 	OIDCToken(ctx context.Context, in *OIDCTokenRequest, opts ...grpc.CallOption) (*OIDCTokenResponse, error)
 	OIDCExchange(ctx context.Context, in *OIDCExchangeRequest, opts ...grpc.CallOption) (*OIDCExchangeResponse, error)
+	SendAccessToken(ctx context.Context, in *SendAccessTokenRequest, opts ...grpc.CallOption) (*SendAccessTokenResponse, error)
 }
 
 type authServiceClient struct {
@@ -95,6 +97,16 @@ func (c *authServiceClient) OIDCExchange(ctx context.Context, in *OIDCExchangeRe
 	return out, nil
 }
 
+func (c *authServiceClient) SendAccessToken(ctx context.Context, in *SendAccessTokenRequest, opts ...grpc.CallOption) (*SendAccessTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendAccessTokenResponse)
+	err := c.cc.Invoke(ctx, AuthService_SendAccessToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type AuthServiceServer interface {
 	RegisterAdmin(context.Context, *RegisterAdminRequest) (*RegisterAdminResponse, error)
 	OIDCToken(context.Context, *OIDCTokenRequest) (*OIDCTokenResponse, error)
 	OIDCExchange(context.Context, *OIDCExchangeRequest) (*OIDCExchangeResponse, error)
+	SendAccessToken(context.Context, *SendAccessTokenRequest) (*SendAccessTokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedAuthServiceServer) OIDCToken(context.Context, *OIDCTokenReque
 }
 func (UnimplementedAuthServiceServer) OIDCExchange(context.Context, *OIDCExchangeRequest) (*OIDCExchangeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OIDCExchange not implemented")
+}
+func (UnimplementedAuthServiceServer) SendAccessToken(context.Context, *SendAccessTokenRequest) (*SendAccessTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendAccessToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -240,6 +256,24 @@ func _AuthService_OIDCExchange_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_SendAccessToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendAccessTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SendAccessToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SendAccessToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SendAccessToken(ctx, req.(*SendAccessTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OIDCExchange",
 			Handler:    _AuthService_OIDCExchange_Handler,
+		},
+		{
+			MethodName: "SendAccessToken",
+			Handler:    _AuthService_SendAccessToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

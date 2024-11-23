@@ -17,7 +17,13 @@ func InitDB() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.AutoMigrate(&dto.User{})
+
+	err = db.AutoMigrate(
+		&dto.User{},
+		&dto.AuthCodeOIDC{},
+		&dto.ClientData{},
+		&dto.AccessToken{},
+	)
 	if err != nil {
 		return nil, err
 	}

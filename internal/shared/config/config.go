@@ -46,8 +46,3 @@ func GetAddress() *dto.Address {
 func GetEnvironment() string {
 	return os.Getenv("ENVIRONMENT")
 }
-
-func GetPrivateKey() []byte {
-	privateKey := os.Getenv("PRIVATE_KEY_RSA_FOR_ID_TOKEN")
-	return privateKey
-}

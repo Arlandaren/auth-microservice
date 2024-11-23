@@ -6,6 +6,14 @@ option go_package = "service/pkg/grpc/auth_v1";
 
 import "google/api/annotations.proto";
 
+message SendAccessTokenResponse{}
+
+message SendAccessTokenRequest{
+  string access_token = 1;
+  string token_type = 2;
+  int64 expires_at = 3;
+}
+
 message LoginRequest {
   string name = 1;
   string password = 2;
@@ -43,9 +51,14 @@ message OIDCTokenRequest {
   string code_challenge_method = 7;
   string name = 8;
   string password = 9;
+  string state = 10;
+  string scopes = 11;
 }
 
 message OIDCTokenResponse {
+  string auth_code = 1;
+  string state = 2;
+  string id_token = 3;
 }
 
 message OIDCExchangeRequest {
@@ -102,5 +115,7 @@ service AuthService {
       post: "/v1/auth/oidc/exchange"
       body: "*"
     };
+  };
+  rpc SendAccessToken(SendAccessTokenRequest) returns (SendAccessTokenResponse){
   };
 }
